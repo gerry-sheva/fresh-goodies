@@ -15,10 +15,19 @@ import { FaMinus, FaPlus } from 'react-icons/fa6'
 
 const Products: React.FC = () => {
 	const { products, categories, productGroup } = useProduct()
+	const [activeCategory, setActiveCategory] = useState<string>('Roots')
+
+	const displayedProducts =
+		activeCategory && productGroup ? productGroup[activeCategory] : products
+
 	return (
 		<section>
+			<CategoryFilter
+				categories={categories}
+				setActiveCategory={setActiveCategory}
+			/>
 			<div className="grid grid-cols-2">
-				{products.map((product) => (
+				{displayedProducts.map((product) => (
 					<ProductCard
 						{...product}
 						key={product.id}
@@ -73,7 +82,7 @@ const Counter: React.FC<CounterProps> = ({ quantity, setQuantity }) => {
 	}
 
 	const handleDecrement = () => {
-		if (quantity > 0) {
+		if (quantity > 100) {
 			setQuantity((prev) => prev - 100)
 		}
 	}
@@ -88,6 +97,30 @@ const Counter: React.FC<CounterProps> = ({ quantity, setQuantity }) => {
 			<div onClick={handleIncrement}>
 				<FaPlus />
 			</div>
+		</div>
+	)
+}
+
+interface CategoryFilterProps {
+	categories: string[]
+	setActiveCategory: React.Dispatch<React.SetStateAction<string>>
+}
+
+const CategoryFilter: React.FC<CategoryFilterProps> = ({
+	categories,
+	setActiveCategory,
+}) => {
+	return (
+		<div className="flex flex-nowrap text-nowrap overflow-x-scroll gap-4">
+			<div onClick={() => setActiveCategory('')}>All</div>
+			{categories.map((category, index) => (
+				<div
+					key={index}
+					onClick={() => setActiveCategory(category)}
+				>
+					{category}
+				</div>
+			))}
 		</div>
 	)
 }
