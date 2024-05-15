@@ -1,44 +1,15 @@
+import { ShoppingCart } from '@/types/cart'
+import { Product } from '@/types/product'
 import { create } from 'zustand'
-import { Item } from '../types'
 
-interface Cart {
-	[key: string]: Item
-}
-
-interface State {
-	cart: Cart
-	totalPrice: number
-	updateCart: (itemName: string, item: Item, priceDiff: number) => void
-	// addToCart: (itemName: string, item: Item) => void
-}
-
-const useCart = create<State>((set) => ({
-	cart: {},
-	totalPrice: 0,
-	updateCart: (itemName: string, item: Item, priceDiff: number) =>
-		set((state) => ({
-			totalPrice: state.totalPrice + item.price - priceDiff,
-			cart: {
-				...state.cart,
-				[itemName]: item,
-			},
-		})),
-	// addToCart: (itemName: string, item: Item, priceDiff: number) =>
-	// 	set((state) => ({
-	// 		totalPrice: state.totalPrice + item.price - priceDiff,
-	// 		cart: {
-	// 			...state.cart,
-	// 			[itemName]: item,
-	// 		},
-	// 	})),
-	// subtractFromCart: (itemName: string, item: Item, priceDiff: number) =>
-	// 	set((state) => ({
-	// 		totalPrice: state.totalPrice + item.price - priceDiff,
-	// 		cart: {
-	// 			...state.cart,
-	// 			[itemName]: item,
-	// 		},
-	// 	})),
+const useCart = create<ShoppingCart>((set) => ({
+	items: [],
+	addItem: (product: Product, quantity: number): void => {},
+	removeItem: (productId: number): void => {},
+	updateItemQuantity: (productId: number, quantity: number): void => {},
+	getTotalPrice: (): number => {
+		return 0
+	},
 }))
 
 export default useCart
