@@ -7,7 +7,6 @@ export default function Home() {
 		<main className="flex min-h-screen flex-col px-4">
 			<NavBar />
 			<Products />
-			<CartButton />
 		</main>
 	)
 }

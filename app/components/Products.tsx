@@ -7,11 +7,23 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
+import {
+	Drawer,
+	DrawerClose,
+	DrawerContent,
+	DrawerDescription,
+	DrawerFooter,
+	DrawerHeader,
+	DrawerTitle,
+	DrawerTrigger,
+} from '@/components/ui/drawer'
+import { Button } from '@/components/ui/button'
 import useProduct from '../hooks/useProduct'
 import { Product } from '@/types/product'
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
+import CartButton from './CartButton'
 
 const Products: React.FC = () => {
 	const { products, categories, productGroup } = useProduct()
@@ -34,28 +46,55 @@ const Products: React.FC = () => {
 					/>
 				))}
 			</div>
+			<CartButton />
 		</section>
 	)
 }
 
 export default Products
 
-const ProductCard: React.FC<Product> = (item) => {
+const ProductDrawer: React.FC<React.PropsWithChildren<Product>> = ({
+	children,
+	...product
+}) => {
+	console.log(children)
+	return (
+		<Drawer>
+			<DrawerTrigger>{children}</DrawerTrigger>
+			<DrawerContent>
+				<DrawerHeader>
+					<DrawerTitle>{product.name}</DrawerTitle>
+					<DrawerDescription>This action cannot be undone.</DrawerDescription>
+				</DrawerHeader>
+				<DrawerFooter>
+					<Button>Submit</Button>
+					<DrawerClose>
+						<Button variant="outline">Cancel</Button>
+					</DrawerClose>
+				</DrawerFooter>
+			</DrawerContent>
+		</Drawer>
+	)
+}
+
+const ProductCard: React.FC<Product> = (product) => {
 	const [quantity, setQuantity] = useState<number>(1000)
 	return (
 		<Card className="col-span-1">
-			<CardHeader>
-				<Image
-					src={'/products/cucumber.png'}
-					width={150}
-					height={120}
-					alt="product image"
-				/>
-			</CardHeader>
-			<CardContent>
-				<CardTitle>${item.price * quantity}</CardTitle>
-				<CardDescription>{item.name}</CardDescription>
-			</CardContent>
+			<ProductDrawer {...product}>
+				<CardHeader>
+					<Image
+						src={'/products/cucumber.png'}
+						width={150}
+						height={120}
+						alt="product image"
+					/>
+				</CardHeader>
+				<CardContent>
+					<CardTitle>${product.price * quantity}</CardTitle>
+					<CardDescription>{product.name}</CardDescription>
+				</CardContent>
+			</ProductDrawer>
 			<CardFooter>
 				<Counter
 					quantity={quantity}
