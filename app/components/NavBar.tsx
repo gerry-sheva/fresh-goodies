@@ -1,6 +1,6 @@
 'use client'
 
-import useCart from '../hooks/cart'
+import useCart from '../hooks/useCart'
 
 const NavBar = () => {
 	return (
