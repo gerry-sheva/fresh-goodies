@@ -8,16 +8,38 @@ export const CartButton: React.FC = () => {
 interface DrawerCartButtonProps {
 	price: number
 	quantity: number
+	isInCart: boolean | undefined
+	handleCartDrawer: () => void
+	handleAddToCart: () => void
 }
 
 export const DrawerCartButton: React.FC<DrawerCartButtonProps> = ({
 	price,
 	quantity,
+	isInCart,
+	handleCartDrawer,
+	handleAddToCart,
 }) => {
+	const handleClick = () => {
+		if (isInCart) {
+			handleCartDrawer()
+		} else {
+			handleAddToCart()
+		}
+	}
 	return (
-		<Button className="flex justify-between h-14 rounded-full">
-			<p>To cart</p>
-			<p>${(price * quantity).toFixed(1)}</p>
+		<Button
+			className="flex justify-between h-14 rounded-full"
+			onClick={handleClick}
+		>
+			{isInCart ? (
+				<p>Go to cart</p>
+			) : (
+				<>
+					<p>To cart</p>
+					<p>${(price * quantity).toFixed(1)}</p>
+				</>
+			)}
 		</Button>
 	)
 }

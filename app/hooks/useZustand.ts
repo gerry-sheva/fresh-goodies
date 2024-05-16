@@ -19,15 +19,32 @@ const createCartSlice: StateCreator<ShoppingCart> = (set) => ({
 			),
 		}))
 	},
-	// getTotalPrice: (): number => {
-	// 	return useCart
-	// 		.getState()
-	// 		.items.reduce(
-	// 			(totalPrice, value) =>
-	// 				totalPrice + value.product.price * value.quantity,
-	// 			0
-	// 		)
-	// },
+})
+
+type Favorite = {
+	productId: number
+}
+
+interface FavoriteSlice {
+	favoriteProducts: Favorite[]
+	addToFavorite: (id: number) => void
+	removeFromFavorite: (id: number) => void
+}
+
+const createFavoriteSlice: StateCreator<FavoriteSlice> = (set) => ({
+	favoriteProducts: [],
+	addToFavorite: (id) => {
+		set((state) => ({
+			favoriteProducts: [...state.favoriteProducts, { productId: id }],
+		}))
+	},
+	removeFromFavorite: (id) => {
+		set((state) => ({
+			favoriteProducts: state.favoriteProducts.filter(
+				(product) => product.productId != id
+			),
+		}))
+	},
 })
 
 interface ActiveProduct {
@@ -42,7 +59,10 @@ const createActiveProductSlice: StateCreator<ActiveProduct> = (set) => ({
 	},
 })
 
-export const useBoundedStore = create<ActiveProduct & ShoppingCart>((...a) => ({
+export const useBoundedStore = create<
+	ActiveProduct & ShoppingCart & FavoriteSlice
+>((...a) => ({
 	...createActiveProductSlice(...a),
 	...createCartSlice(...a),
+	...createFavoriteSlice(...a),
 }))

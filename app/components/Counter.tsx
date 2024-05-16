@@ -1,17 +1,17 @@
 import { useState } from 'react'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
 
-interface CardCounterProps {
+interface CounterProps {
 	quantity: number
 	setQuantity: React.Dispatch<React.SetStateAction<number>>
 }
 
-interface DrawerCounterProps {
+interface CounterProps {
 	quantity: number
 	setQuantity: React.Dispatch<React.SetStateAction<number>>
 }
 
-export const CardCounter: React.FC<CardCounterProps> = ({
+export const CardCounter: React.FC<CounterProps> = ({
 	quantity,
 	setQuantity,
 }) => {
@@ -44,7 +44,7 @@ export const CardCounter: React.FC<CardCounterProps> = ({
 	)
 }
 
-export const DrawerCounter: React.FC<DrawerCounterProps> = ({
+export const DrawerCounter: React.FC<CounterProps> = ({
 	quantity,
 	setQuantity,
 }) => {
@@ -65,6 +65,29 @@ export const DrawerCounter: React.FC<DrawerCounterProps> = ({
 
 	return (
 		<div className="w-full flex justify-between items-center h-14 px-4 bg-gray-50 rounded-full">
+			<div onClick={handleDecrement}>
+				<FaMinus />
+			</div>
+			<p>{quantity}g</p>
+			<div onClick={handleIncrement}>
+				<FaPlus />
+			</div>
+		</div>
+	)
+}
+
+interface CartCounterProps {
+	quantity: number
+	handleIncrement: () => void
+	handleDecrement: () => void
+}
+export const CartCounter: React.FC<CartCounterProps> = ({
+	quantity,
+	handleDecrement,
+	handleIncrement,
+}) => {
+	return (
+		<div className="w-full flex justify-between items-center">
 			<div onClick={handleDecrement}>
 				<FaMinus />
 			</div>

@@ -14,13 +14,14 @@ import Image from 'next/image'
 import { CartButton } from './CartButton'
 import { useBoundedStore } from '../hooks/useZustand'
 import { CardCounter } from './Counter'
-import { ProductDrawer } from './Drawer'
+import { CartDrawer, ProductDrawer } from './Drawer'
 
 const Products: React.FC = () => {
 	const { products, categories, productGroup } = useProduct()
 	const [activeCategory, setActiveCategory] = useState<string>('')
-	const [isDrawerShown, setIsDrawerShown] = useState<boolean>(false)
-
+	const [isProductDrawerShown, setIsProductDrawerShown] =
+		useState<boolean>(false)
+	const [isCartDrawerShown, setIsCartDrawerShown] = useState<boolean>(false)
 	const activeProduct = useBoundedStore((state) => state.activeProduct)
 	const setActiveProduct = useBoundedStore((state) => state.setActiveProduct)
 
@@ -55,7 +56,7 @@ const Products: React.FC = () => {
 			<div className="grid grid-cols-2">
 				{displayedProducts.map((product) => (
 					<ProductCard
-						setIsDrawerShown={setIsDrawerShown}
+						setIsDrawerShown={setIsProductDrawerShown}
 						product={product}
 						key={product.id}
 					/>
@@ -63,9 +64,14 @@ const Products: React.FC = () => {
 			</div>
 			<CartButton />
 			<ProductDrawer
-				isDrawerShown={isDrawerShown}
-				setIsDrawerShown={setIsDrawerShown}
+				isProductDrawerShown={isProductDrawerShown}
+				setIsProductDrawerShown={setIsProductDrawerShown}
+				setIsCartDrawerShown={setIsCartDrawerShown}
 				handleCyclingActiveProduct={handleCyclingActiveProduct}
+			/>
+			<CartDrawer
+				isCartDrawerShowm={isCartDrawerShown}
+				setIsCartDrawerShown={setIsCartDrawerShown}
 			/>
 		</section>
 	)
