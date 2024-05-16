@@ -63,7 +63,9 @@ const Products: React.FC = () => {
 					/>
 				))}
 			</div>
-			{homeCartItem && <CartButton />}
+			{homeCartItem && (
+				<CartButton setIsCartDrawerShown={setIsCartDrawerShown} />
+			)}
 			<ProductDrawer
 				isProductDrawerShown={isProductDrawerShown}
 				setIsProductDrawerShown={setIsProductDrawerShown}

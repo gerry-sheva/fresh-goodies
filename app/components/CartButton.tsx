@@ -3,7 +3,13 @@ import React from 'react'
 import { useBoundedStore } from '../hooks/useZustand'
 import { Product } from '@/types/product'
 
-export const CartButton: React.FC = () => {
+interface CartButtonProps {
+	setIsCartDrawerShown: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export const CartButton: React.FC<CartButtonProps> = ({
+	setIsCartDrawerShown,
+}) => {
 	const homeCartItem = useBoundedStore((state) => state.homeCartItem)
 	const addItem = useBoundedStore((state) => state.addItem)
 	const items = useBoundedStore((state) => state.items)
@@ -20,7 +26,8 @@ export const CartButton: React.FC = () => {
 				homeCartItem?.product as Product,
 				homeCartItem?.quantity as number
 			)
-			removeHomeCartItem()
+		} else {
+			setIsCartDrawerShown(true)
 		}
 	}
 	return (
