@@ -10,5 +10,5 @@ export interface ShoppingCart {
 	addItem(product: Product, quantity: number): void
 	removeItem(productId: number): void
 	updateItemQuantity(productId: number, quantity: number): void
-	getTotalPrice(): number
+	// getTotalPrice(): number
 }

@@ -27,7 +27,7 @@ import CartButton from './CartButton'
 
 const Products: React.FC = () => {
 	const { products, categories, productGroup } = useProduct()
-	const [activeCategory, setActiveCategory] = useState<string>('Roots')
+	const [activeCategory, setActiveCategory] = useState<string>('')
 
 	const displayedProducts =
 		activeCategory && productGroup ? productGroup[activeCategory] : products
@@ -57,7 +57,6 @@ const ProductDrawer: React.FC<React.PropsWithChildren<Product>> = ({
 	children,
 	...product
 }) => {
-	console.log(children)
 	return (
 		<Drawer>
 			<DrawerTrigger>{children}</DrawerTrigger>
