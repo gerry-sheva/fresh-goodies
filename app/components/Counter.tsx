@@ -1,7 +1,10 @@
+import { Product } from '@/types/product'
 import { useState } from 'react'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
+import { useBoundedStore } from '../hooks/useZustand'
 
-interface CounterProps {
+interface CardCounterProps {
+	product: Product
 	quantity: number
 	setQuantity: React.Dispatch<React.SetStateAction<number>>
 }
@@ -11,22 +14,32 @@ interface CounterProps {
 	setQuantity: React.Dispatch<React.SetStateAction<number>>
 }
 
-export const CardCounter: React.FC<CounterProps> = ({
+export const CardCounter: React.FC<CardCounterProps> = ({
+	product,
 	quantity,
 	setQuantity,
 }) => {
 	const [isActive, setIsActive] = useState<boolean>(false)
+	const updateHomeCartCounter = useBoundedStore(
+		(state) => state.updateHomeCartItem
+	)
+
 	const handleIncrement = () => {
 		if (isActive) {
-			setQuantity((prev) => prev + 100)
+			const newQuantity = quantity + 100
+			setQuantity(newQuantity)
+			updateHomeCartCounter({ product, quantity: newQuantity })
 		} else {
 			setIsActive(true)
+			updateHomeCartCounter({ product, quantity })
 		}
 	}
 
 	const handleDecrement = () => {
 		if (quantity > 100) {
-			setQuantity((prev) => prev - 100)
+			const newQuantity = quantity - 100
+			setQuantity(newQuantity)
+			updateHomeCartCounter({ product, quantity: newQuantity })
 		}
 	}
 	return (

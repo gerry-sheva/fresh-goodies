@@ -1,8 +1,36 @@
 import { Button } from '@/components/ui/button'
 import React from 'react'
+import { useBoundedStore } from '../hooks/useZustand'
+import { Product } from '@/types/product'
 
 export const CartButton: React.FC = () => {
-	return <Button className="fixed w-10/12 bottom-0">Cart</Button>
+	const homeCartItem = useBoundedStore((state) => state.homeCartItem)
+	const addItem = useBoundedStore((state) => state.addItem)
+	const items = useBoundedStore((state) => state.items)
+	const removeHomeCartItem = useBoundedStore(
+		(state) => state.removeHomeCartItem
+	)
+
+	const isInCart =
+		items.find((item) => item.product.id === homeCartItem?.product.id) && true
+
+	const handleAddToCart = () => {
+		if (!isInCart) {
+			addItem(
+				homeCartItem?.product as Product,
+				homeCartItem?.quantity as number
+			)
+			removeHomeCartItem()
+		}
+	}
+	return (
+		<Button
+			className="fixed w-10/12 bottom-0"
+			onClick={handleAddToCart}
+		>
+			{isInCart ? 'Go to cart' : 'Add to cart'}
+		</Button>
+	)
 }
 
 interface DrawerCartButtonProps {

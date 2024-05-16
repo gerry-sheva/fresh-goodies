@@ -1,4 +1,4 @@
-import { ShoppingCart } from '@/types/cart'
+import { CartItem, ShoppingCart } from '@/types/cart'
 import { Product } from '@/types/product'
 import { StateCreator, create } from 'zustand'
 
@@ -59,10 +59,23 @@ const createActiveProductSlice: StateCreator<ActiveProduct> = (set) => ({
 	},
 })
 
+interface HomeCartItem {
+	homeCartItem?: CartItem
+	updateHomeCartItem: (item: CartItem) => void
+	removeHomeCartItem: () => void
+}
+
+const createHomeCartItem: StateCreator<HomeCartItem> = (set) => ({
+	homeCartItem: undefined,
+	updateHomeCartItem: (item) => set((state) => ({ homeCartItem: item })),
+	removeHomeCartItem: () => set(() => ({ homeCartItem: undefined })),
+})
+
 export const useBoundedStore = create<
-	ActiveProduct & ShoppingCart & FavoriteSlice
+	ActiveProduct & ShoppingCart & FavoriteSlice & HomeCartItem
 >((...a) => ({
 	...createActiveProductSlice(...a),
 	...createCartSlice(...a),
 	...createFavoriteSlice(...a),
+	...createHomeCartItem(...a),
 }))

@@ -24,6 +24,7 @@ const Products: React.FC = () => {
 	const [isCartDrawerShown, setIsCartDrawerShown] = useState<boolean>(false)
 	const activeProduct = useBoundedStore((state) => state.activeProduct)
 	const setActiveProduct = useBoundedStore((state) => state.setActiveProduct)
+	const homeCartItem = useBoundedStore((state) => state.homeCartItem)
 
 	const displayedProducts =
 		activeCategory && productGroup ? productGroup[activeCategory] : products
@@ -62,7 +63,7 @@ const Products: React.FC = () => {
 					/>
 				))}
 			</div>
-			<CartButton />
+			{homeCartItem && <CartButton />}
 			<ProductDrawer
 				isProductDrawerShown={isProductDrawerShown}
 				setIsProductDrawerShown={setIsProductDrawerShown}
@@ -114,6 +115,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 			</div>
 			<CardFooter>
 				<CardCounter
+					product={product}
 					quantity={quantity}
 					setQuantity={setQuantity}
 				/>
