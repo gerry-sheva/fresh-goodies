@@ -7,24 +7,14 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
-import {
-	Drawer,
-	DrawerClose,
-	DrawerContent,
-	DrawerDescription,
-	DrawerFooter,
-	DrawerHeader,
-	DrawerTitle,
-	DrawerTrigger,
-} from '@/components/ui/drawer'
-import { Button } from '@/components/ui/button'
 import useProduct from '../hooks/useProduct'
 import { Product } from '@/types/product'
 import React, { useState } from 'react'
 import Image from 'next/image'
-import { FaMinus, FaPlus } from 'react-icons/fa6'
-import CartButton from './CartButton'
+import { CartButton } from './CartButton'
 import { useBoundedStore } from '../hooks/useZustand'
+import { CardCounter } from './Counter'
+import { ProductDrawer } from './Drawer'
 
 const Products: React.FC = () => {
 	const { products, categories, productGroup } = useProduct()
@@ -83,37 +73,6 @@ const Products: React.FC = () => {
 
 export default Products
 
-interface ProductDrawerProps {
-	isDrawerShown: boolean
-	setIsDrawerShown: React.Dispatch<React.SetStateAction<boolean>>
-	handleCyclingActiveProduct: (next: boolean) => void
-}
-
-const ProductDrawer: React.FC<ProductDrawerProps> = ({
-	isDrawerShown,
-	setIsDrawerShown,
-	handleCyclingActiveProduct,
-}) => {
-	const activeProduct = useBoundedStore((state) => state.activeProduct)
-	return (
-		<Drawer
-			open={isDrawerShown}
-			onOpenChange={setIsDrawerShown}
-		>
-			<DrawerContent>
-				<DrawerHeader>
-					<DrawerTitle onClick={() => handleCyclingActiveProduct(true)}>
-						{activeProduct?.name}
-					</DrawerTitle>
-					<DrawerDescription onClick={() => handleCyclingActiveProduct(false)}>
-						This action cannot be undone.
-					</DrawerDescription>
-				</DrawerHeader>
-			</DrawerContent>
-		</Drawer>
-	)
-}
-
 interface ProductCardProps {
 	product: Product
 	setIsDrawerShown: React.Dispatch<React.SetStateAction<boolean>>
@@ -148,47 +107,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
 				</CardContent>
 			</div>
 			<CardFooter>
-				<Counter
+				<CardCounter
 					quantity={quantity}
 					setQuantity={setQuantity}
 				/>
 			</CardFooter>
 		</Card>
-	)
-}
-
-interface CounterProps {
-	quantity: number
-	setQuantity: React.Dispatch<React.SetStateAction<number>>
-}
-
-const Counter: React.FC<CounterProps> = ({ quantity, setQuantity }) => {
-	const [isActive, setIsActive] = useState<boolean>(false)
-	const handleIncrement = () => {
-		if (isActive) {
-			setQuantity((prev) => prev + 100)
-		} else {
-			setIsActive(true)
-		}
-	}
-
-	const handleDecrement = () => {
-		if (quantity > 100) {
-			setQuantity((prev) => prev - 100)
-		}
-	}
-	return (
-		<div className="w-full flex justify-between items-center">
-			{isActive && (
-				<div onClick={handleDecrement}>
-					<FaMinus />
-				</div>
-			)}
-			<p>{quantity}g</p>
-			<div onClick={handleIncrement}>
-				<FaPlus />
-			</div>
-		</div>
 	)
 }
 

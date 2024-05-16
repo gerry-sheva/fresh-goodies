@@ -1,5 +1,4 @@
 import NavBar from './components/NavBar'
-import CartButton from './components/CartButton'
 import Products from './components/Products'
 
 export default function Home() {
