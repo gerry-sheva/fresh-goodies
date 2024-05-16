@@ -24,13 +24,37 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
 import CartButton from './CartButton'
+import { useBoundedStore } from '../hooks/useZustand'
 
 const Products: React.FC = () => {
 	const { products, categories, productGroup } = useProduct()
 	const [activeCategory, setActiveCategory] = useState<string>('')
+	const [isDrawerShown, setIsDrawerShown] = useState<boolean>(false)
+
+	const activeProduct = useBoundedStore((state) => state.activeProduct)
+	const setActiveProduct = useBoundedStore((state) => state.setActiveProduct)
 
 	const displayedProducts =
 		activeCategory && productGroup ? productGroup[activeCategory] : products
+
+	const handleCyclingActiveProduct = (next: boolean) => {
+		const index = displayedProducts.findIndex(
+			(product) => product.id === activeProduct?.id
+		)
+		if (next) {
+			if (index === displayedProducts.length - 1) {
+				setActiveProduct(displayedProducts[0])
+			} else {
+				setActiveProduct(displayedProducts[index + 1])
+			}
+		} else {
+			if (index === 0) {
+				setActiveProduct(displayedProducts[displayedProducts.length - 1])
+			} else {
+				setActiveProduct(displayedProducts[index - 1])
+			}
+		}
+	}
 
 	return (
 		<section>
@@ -41,46 +65,75 @@ const Products: React.FC = () => {
 			<div className="grid grid-cols-2">
 				{displayedProducts.map((product) => (
 					<ProductCard
-						{...product}
+						setIsDrawerShown={setIsDrawerShown}
+						product={product}
 						key={product.id}
 					/>
 				))}
 			</div>
 			<CartButton />
+			<ProductDrawer
+				isDrawerShown={isDrawerShown}
+				setIsDrawerShown={setIsDrawerShown}
+				handleCyclingActiveProduct={handleCyclingActiveProduct}
+			/>
 		</section>
 	)
 }
 
 export default Products
 
-const ProductDrawer: React.FC<React.PropsWithChildren<Product>> = ({
-	children,
-	...product
+interface ProductDrawerProps {
+	isDrawerShown: boolean
+	setIsDrawerShown: React.Dispatch<React.SetStateAction<boolean>>
+	handleCyclingActiveProduct: (next: boolean) => void
+}
+
+const ProductDrawer: React.FC<ProductDrawerProps> = ({
+	isDrawerShown,
+	setIsDrawerShown,
+	handleCyclingActiveProduct,
 }) => {
+	const activeProduct = useBoundedStore((state) => state.activeProduct)
 	return (
-		<Drawer>
-			<DrawerTrigger>{children}</DrawerTrigger>
+		<Drawer
+			open={isDrawerShown}
+			onOpenChange={setIsDrawerShown}
+		>
 			<DrawerContent>
 				<DrawerHeader>
-					<DrawerTitle>{product.name}</DrawerTitle>
-					<DrawerDescription>This action cannot be undone.</DrawerDescription>
+					<DrawerTitle onClick={() => handleCyclingActiveProduct(true)}>
+						{activeProduct?.name}
+					</DrawerTitle>
+					<DrawerDescription onClick={() => handleCyclingActiveProduct(false)}>
+						This action cannot be undone.
+					</DrawerDescription>
 				</DrawerHeader>
-				<DrawerFooter>
-					<Button>Submit</Button>
-					<DrawerClose>
-						<Button variant="outline">Cancel</Button>
-					</DrawerClose>
-				</DrawerFooter>
 			</DrawerContent>
 		</Drawer>
 	)
 }
 
-const ProductCard: React.FC<Product> = (product) => {
+interface ProductCardProps {
+	product: Product
+	setIsDrawerShown: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({
+	setIsDrawerShown,
+	product,
+}) => {
 	const [quantity, setQuantity] = useState<number>(1000)
+	const setActiveProduct = useBoundedStore((state) => state.setActiveProduct)
+
+	const handleOpenDrawer = () => {
+		setActiveProduct(product)
+		setIsDrawerShown(true)
+	}
+
 	return (
 		<Card className="col-span-1">
-			<ProductDrawer {...product}>
+			<div onClick={handleOpenDrawer}>
 				<CardHeader>
 					<Image
 						src={'/products/cucumber.png'}
@@ -90,10 +143,10 @@ const ProductCard: React.FC<Product> = (product) => {
 					/>
 				</CardHeader>
 				<CardContent>
-					<CardTitle>${product.price * quantity}</CardTitle>
+					<CardTitle>${(product.price * quantity).toFixed(1)}</CardTitle>
 					<CardDescription>{product.name}</CardDescription>
 				</CardContent>
-			</ProductDrawer>
+			</div>
 			<CardFooter>
 				<Counter
 					quantity={quantity}
