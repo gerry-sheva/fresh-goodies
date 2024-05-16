@@ -23,6 +23,9 @@ export const CardCounter: React.FC<CardCounterProps> = ({
 	const updateHomeCartCounter = useBoundedStore(
 		(state) => state.updateHomeCartItem
 	)
+	const items = useBoundedStore((state) => state.items)
+
+	const isInCart = items.find((item) => item.product.id === product.id)
 
 	const handleIncrement = () => {
 		if (isActive) {
@@ -49,7 +52,7 @@ export const CardCounter: React.FC<CardCounterProps> = ({
 					<FaMinus />
 				</div>
 			)}
-			<p>{quantity}g</p>
+			<p>{isInCart ? isInCart.quantity : quantity}g</p>
 			<div onClick={handleIncrement}>
 				<FaPlus />
 			</div>
